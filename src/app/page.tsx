@@ -16,7 +16,7 @@ export default function Home() {
   const [token, setToken] = useState('');
   const [sayHelloTo, setSayHelloTo] = useState('');
   const [sayHelloToResponse, setSayHelloToResponse] = useState('');
-  const [useTOTP, setUseTOTP] = useState(false);
+  const [useExtraAuthToken, setUseExtraAuthToken] = useState(false);
   const [pong, setPong] = useState('');
 
   // set API host endpoint from .env file
@@ -53,7 +53,7 @@ export default function Home() {
       },
     };
 
-    const res = await fetch(`${API_HOST}/sayHello${useTOTP ? 'TOTP' : ''}?to=${sayHelloTo}`, requestOptions)
+    const res = await fetch(`${API_HOST}/sayHello${useExtraAuthToken ? 'WithToken' : ''}?to=${sayHelloTo}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           Promise.reject(response);
@@ -94,7 +94,7 @@ export default function Home() {
       },
     };
 
-    const res = await fetch(`${API_HOST}/pingTOTP`, requestOptions)
+    const res = await fetch(`${API_HOST}/pingWithToken`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           Promise.reject(response);
@@ -112,7 +112,7 @@ export default function Home() {
   return (
     <main>
       <h1 className='text-center'>ExtraAuth demostration client app</h1>
-      <h3 className='text-center'>How to use Extra-Auth-TOTP-Generator</h3>
+      <h3 className='text-center'>How to use Extra-Auth-Token-Generator</h3>
 
       <div className='m-5'>
         <h5><code>1</code> - Response from unauthenticated API server endpoint <code>GET /</code></h5>
@@ -126,12 +126,12 @@ export default function Home() {
           <div className="col-sm-2">
             <input type="text" className="form-control" id="sayHelloTo" value={sayHelloTo} onChange={(e) => setSayHelloTo(e.target.value)} />
           </div>
-          <label htmlFor="sayHelloTo" className="col-sm-2 col-form-label">Use TOTP token:</label>
+          <label htmlFor="sayHelloTo" className="col-sm-2 col-form-label">Use ExtraAuth token:</label>
           <div className="col-sm-1">
-            <input type="checkbox" className="form-check-input" id="useTotp" checked={useTOTP} onChange={(e) => setUseTOTP(e.target.checked)} />
+            <input type="checkbox" className="form-check-input" id="useExtaAuthToken" checked={useExtraAuthToken} onChange={(e) => setUseExtraAuthToken(e.target.checked)} />
           </div>
         </div>
-        <h5><code>2</code> - Response from authenticated API server endpoint <code>GET /sayHello{useTOTP ? 'TOTP' : ''}?to={sayHelloTo}</code> <u>{useTOTP ? 'with' : 'without'}</u> TOTP being generated</h5>
+        <h5><code>2</code> - Response from authenticated API server endpoint <code>GET /sayHello{useExtraAuthToken ? 'WithToken' : ''}?to={sayHelloTo}</code> <u>{useExtraAuthToken ? 'with' : 'without'}</u> ExtraAuth token being generated</h5>
         <code className='d-block border p-2 my-2'>{sayHelloToResponse}</code>
         <button className='btn btn-primary' type='button' onClick={callServerSayHello}>Call Server (/sayHello)</button>
       </div>
@@ -143,9 +143,9 @@ export default function Home() {
       </div>
 
       <div className='m-5'>
-        <h5><code>4</code> - Response from authenticated API server endpoint <code>GET /pingTOTP</code></h5>
+        <h5><code>4</code> - Response from authenticated API server endpoint <code>GET /pingWithToken</code></h5>
         <code className='d-block border p-2 my-2'>{pong}</code>
-        <button className='btn btn-primary' type='button' onClick={callServerPing}>Call Server (/pingTOTP)</button>
+        <button className='btn btn-primary' type='button' onClick={callServerPing}>Call Server (/pingWithToken)</button>
       </div>
 
       <hr/>
