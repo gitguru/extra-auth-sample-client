@@ -3,6 +3,14 @@
 import { useState } from 'react';
 import { ExtraAuthTokenGenerator } from '@agagguturu/extra-auth-totp-generator';
 
+const parseIntLocal = (n:any, dflt:number):number => {
+  if (isNaN(n)) {
+    return dflt;
+  } else {
+    return parseInt(n);
+  }
+}
+
 export default function Home() {
   const [index, setIndex] = useState('');
   const [token, setToken] = useState('');
@@ -18,7 +26,7 @@ export default function Home() {
   const tokenGenerator = new ExtraAuthTokenGenerator();
 
   // set token generator setting
-  tokenGenerator.digits = parseInt(process.env.NEXT_PUBLIC_EXTRA_AUTH_TOKEN_DIGITS) || 10; 
+  tokenGenerator.digits = parseIntLocal(process.env.NEXT_PUBLIC_EXTRA_AUTH_TOKEN_DIGITS, 10);
   tokenGenerator.period = 60; // set to 1 minute
   // tokenGenerator.algorithm = "SHA-512"; // SHA-512 is the default
 
