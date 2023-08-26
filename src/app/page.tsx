@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { generate_totp_token_from_jwt_token } from '@agagguturu/extra-auth-totp-generator';
+import { ExtraAuthTokenGenerator } from '@agagguturu/extra-auth-totp-generator';
 
 export default function Home() {
   const [index, setIndex] = useState('');
@@ -11,7 +11,20 @@ export default function Home() {
   const [useTOTP, setUseTOTP] = useState(false);
   const [pong, setPong] = useState('');
 
+  // set API host endpoint from .env file
   const API_HOST = process.env.NEXT_PUBLIC_API_HOST || "http://localhost:3001";
+
+  // create ExtraAuthTokenGenerator instance
+  const tokenGenerator = new ExtraAuthTokenGenerator();
+
+  // set token generator setting
+  tokenGenerator.digits = parseInt(process.env.NEXT_PUBLIC_EXTRA_AUTH_TOKEN_DIGITS) || 10; 
+  tokenGenerator.period = 60; // set to 1 minute
+  // tokenGenerator.algorithm = "SHA-512"; // SHA-512 is the default
+
+  // this is the default ExtaAuth token header name used to send the generated token to backend services/API
+  // default value is "X-Extra-Auth-Token"
+  const extraAuthTokenHeaderName = tokenGenerator.getExtraAuthTokenHeaderName();
 
   const callServerIndex = async (): Promise<void> => {
     const res = await fetch(`${API_HOST}/`);
@@ -28,7 +41,7 @@ export default function Home() {
       headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${token}`,
-        'X-EXTRA-AUTH-TOTP': useTOTP ? generate_totp_token_from_jwt_token(token) : '*'
+        [extraAuthTokenHeaderName]: tokenGenerator.generate_token(token)
       },
     };
 
@@ -69,7 +82,7 @@ export default function Home() {
       headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${token}`,
-        'X-EXTRA-AUTH-TOTP': useTOTP ? generate_totp_token_from_jwt_token(token) : '*'
+        [extraAuthTokenHeaderName]: tokenGenerator.generate_token(token)
       },
     };
 
@@ -87,8 +100,6 @@ export default function Home() {
         setPong(JSON.stringify(error));
       });
   };
-
-  console.log(process.env);
 
   return (
     <main>
@@ -128,6 +139,12 @@ export default function Home() {
         <code className='d-block border p-2 my-2'>{pong}</code>
         <button className='btn btn-primary' type='button' onClick={callServerPing}>Call Server (/pingTOTP)</button>
       </div>
+
+      <hr/>
+
+      <a className="btn btn-link" href="https://github.com/gitguru/extra-auth-sample-server" target='_blank'>Server code</a>
+      <br/>
+      <a className="btn btn-link" href="https://github.com/gitguru/extra-auth-sample-client" target='_blank'>Client code</a>
 
     </main>
   )
