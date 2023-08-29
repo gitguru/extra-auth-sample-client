@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ExtraAuthTokenGenerator } from '@agagguturu/extra-auth-totp-generator';
+import { ExtraAuthTokenGenerator } from '@agagguturu/extra-auth-token-generator';
 
 const parseIntLocal = (n:any, dflt:number):number => {
   if (isNaN(n)) {
