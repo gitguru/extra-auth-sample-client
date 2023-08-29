@@ -49,7 +49,7 @@ export default function Home() {
       headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${token}`,
-        [extraAuthTokenHeaderName]: tokenGenerator.generate_token(token)
+        [extraAuthTokenHeaderName]: useExtraAuthToken ? tokenGenerator.generate_token(token) : '*'
       },
     };
 
@@ -90,7 +90,7 @@ export default function Home() {
       headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${token}`,
-        [extraAuthTokenHeaderName]: tokenGenerator.generate_token(token)
+        [extraAuthTokenHeaderName]: useExtraAuthToken ? tokenGenerator.generate_token(token) : '*'
       },
     };
 
